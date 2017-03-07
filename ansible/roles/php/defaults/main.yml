@@ -1,0 +1,13 @@
+fpm_user: www-data
+fpm_group: www-data
+fpm_listen: 127.0.0.1:9000
+fpm_log_path: /var/log/php
+
+php_ini:
+  'date.timezone': "Europe/Berlin"
+  'memory_limit': 1024M
+  'max_execution_time': 300
+  'request_terminate_timeout': 300
+  'upload_max_filesize': 512M
+  'post_max_size': 512M
+  'variables_order': "EGPCS"

@@ -1,0 +1,12 @@
+- name: Add debian repository
+  apt_repository:
+    repo: deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main
+    state: present
+
+- name: Install ansible packages.
+  apt:
+    name: "{{ item }}"
+    state: present
+    force: yes
+  with_items:
+    - ansible

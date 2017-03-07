@@ -1,0 +1,30 @@
+---
+- name: Install varnish packages.
+  apt:
+    name: varnish
+    state: present
+
+- name: ensure default.vcl configuration file.
+  template:
+    src: varnish.vcl.j2
+    dest: /etc/varnish/default.vcl
+  notify:
+    - restart varnish
+
+- name: set correct daemon options
+  ini_file:
+    dest: /lib/systemd/system/varnish.service
+    section: Service
+    option: ExecStart
+    value: "/usr/sbin/varnishd -a :80 -T localhost:6082 -f /etc/varnish/default.vcl -p thread_pool_min=15 -p thread_pool_max=500 -p thread_pool_timeout=300 -S /etc/varnish/secret -s {{ varnish_storage }}"
+    backup: yes
+  notify:
+    - restart varnish
+
+- name: start and enable varnish service.
+  systemd:
+    name: varnish
+    enabled: true
+    daemon-reload: yes
+  notify:
+    - restart varnish

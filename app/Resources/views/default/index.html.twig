@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    Server Info: {{ dump(infos) }}
+    Chat: {{ dump(messages) }}
+    Entities: {{ dump(entities) }}
+    Players: {{ dump(players) }}
+    Plugins: {{ dump(plugins) }}
+    Tile Entities: {{ dump(tile_entities) }}
+    Worlds: {{ dump(worlds) }}
+{% endblock %}

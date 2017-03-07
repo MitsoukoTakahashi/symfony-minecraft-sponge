@@ -1,0 +1,18 @@
+---
+xdebug_install: true
+
+app_nginx_port: 8080
+app_project_path: /srv/share
+app_relative_webroot: web
+app_front_controller: app.php
+
+mysql_users:
+  - name: minecraft
+    password: ''
+    host: 192.168.142.1
+    priv: '*.*:ALL'
+  -
+    name: minecraft
+    password: ''
+    host: localhost
+    priv: '*.*:ALL'

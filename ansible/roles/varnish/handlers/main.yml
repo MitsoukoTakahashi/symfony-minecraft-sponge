@@ -1,0 +1,6 @@
+---
+- name: restart varnish
+  become: true
+  systemd:
+    name: varnish
+    state: restarted

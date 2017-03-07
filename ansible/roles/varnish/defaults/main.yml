@@ -1,0 +1,2 @@
+---
+varnish_storage: "malloc,512m"
