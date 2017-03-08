@@ -2,73 +2,86 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Player
 {
+    /**
+     * @Serializer\Type("string")
+     */
     private $name;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $uuid;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $address;
+
+    /**
+     * @Serializer\Type("int")
+     */
     private $latency;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $location;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $velocity;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $rotation;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $raw;
 
-    public function __construct(
-        string $name,
-        string $uuid,
-        string $address = '',
-        int $latency = 0,
-        array $location = [],
-        array $velocity = [],
-        array $rotation = [],
-        array $raw = []
-    ) {
-        $this->name = $name;
-        $this->uuid = $uuid;
-        $this->address = $address;
-        $this->latency = $latency;
-        $this->location = $location;
-        $this->velocity = $velocity;
-        $this->rotation = $rotation;
-        $this->raw = $raw;
-    }
-
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function getUuid(): string
+    public function getUuid()
     {
         return $this->uuid;
     }
 
-    public function getAddress(): string
+    public function getAddress()
     {
         return $this->address;
     }
 
-    public function getLatency(): int
+    public function getLatency()
     {
         return $this->latency;
     }
 
-    public function getLocation(): array
+    public function getLocation()
     {
         return $this->location;
     }
 
-    public function getVelocity(): array
+    public function getVelocity()
     {
         return $this->velocity;
     }
 
-    public function getRotation(): array
+    public function getRotation()
     {
         return $this->rotation;
     }
 
-    public function getRaw(): array
+    public function getRaw()
     {
         return $this->raw;
     }

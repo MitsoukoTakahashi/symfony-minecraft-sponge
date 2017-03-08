@@ -2,19 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class PluginList
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\Plugin>")
+     */
     private $plugins;
 
-    public function __construct(array $plugins)
-    {
-        $this->plugins = array_map(function (array $plugin) {
-            return new Plugin($plugin['id'], $plugin['name']);
-        }, $plugins);
-    }
-
     /** @return Plugin[] */
-    public function getPlugins(): array
+    public function getPlugins()
     {
         return $this->plugins;
     }

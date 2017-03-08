@@ -2,37 +2,46 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Command
 {
+    /**
+     * @Serializer\Type("string")
+     */
     private $name;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $aliases;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $usage;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $description;
 
-    public function __construct(string $name, array $aliases, string $usage, string $description = null)
-    {
-        $this->name = $name;
-        $this->aliases = $aliases;
-        $this->usage = $usage;
-        $this->description = $description;
-    }
-
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function getAliases(): array
+    public function getAliases()
     {
         return $this->aliases;
     }
 
-    public function getUsage(): string
+    public function getUsage()
     {
         return $this->usage;
     }
 
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->description;
     }

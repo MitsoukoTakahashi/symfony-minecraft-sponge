@@ -2,30 +2,36 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Message
 {
-    private $timestamp;
+    /**
+     * @Serializer\Type("string")
+     */
+    private $date;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $sender;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $message;
 
-    public function __construct(int $timestamp, array $sender, string $message)
+    public function getDate()
     {
-        $this->timestamp = new \DateTime("@$timestamp");
-        $this->sender = $sender;
-        $this->message = $message;
+        return $this->date;
     }
 
-    public function getTimestamp(): \DateTime
-    {
-        return $this->timestamp;
-    }
-
-    public function getSender(): array
+    public function getSender()
     {
         return $this->sender;
     }
 
-    public function getMessage(): string
+    public function getMessage()
     {
         return $this->message;
     }

@@ -2,19 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class TileEntityList
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\TileEntity>")
+     */
     private $tileEntities;
 
-    public function __construct(array $tileEntities)
-    {
-        $this->tileEntities = array_map(function (array $tileEntity) {
-            return new TileEntity($tileEntity['type'], $tileEntity['location']);
-        }, $tileEntities);
-    }
-
     /** @return TileEntity[] */
-    public function getTileEntities(): array
+    public function getTileEntities()
     {
         return $this->tileEntities;
     }

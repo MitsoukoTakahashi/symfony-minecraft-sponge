@@ -2,19 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class PlayerList
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\Player>")
+     */
     private $players;
 
-    public function __construct(array $players)
-    {
-        $this->players = array_map(function (array $player) {
-            return new Player($player['name'], $player['uuid']);
-        }, $players);
-    }
-
     /** @return Player[] */
-    public function getPlayers(): array
+    public function getPlayers()
     {
         return $this->players;
     }

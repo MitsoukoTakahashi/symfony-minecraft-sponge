@@ -2,19 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class EntityList
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\Entity>")
+     */
     private $entities;
 
-    public function __construct(array $entities)
-    {
-        $this->entities = array_map(function(array $entity) {
-            return new Entity($entity['type'], $entity['uuid']);
-        },$entities);
-    }
-
     /** @return Entity[] */
-    public function getEntities(): array
+    public function getEntities()
     {
         return $this->entities;
     }

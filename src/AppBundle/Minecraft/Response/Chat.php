@@ -2,20 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Chat
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\Message>")
+     */
     private $messages;
 
-    /** @param Message[] $messages */
-    public function __construct(array $messages)
-    {
-        $this->messages = array_map(function (array $message) {
-            return new Message($message['date'], $message['sender'], $message['message']);
-        }, $messages);
-    }
-
     /** @return Message[] */
-    public function getMessages(): array
+    public function getMessages()
     {
         return $this->messages;
     }

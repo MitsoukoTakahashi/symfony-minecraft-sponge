@@ -16,202 +16,172 @@ use AppBundle\Minecraft\Response\Plugin;
 use AppBundle\Minecraft\Response\PluginList;
 use AppBundle\Minecraft\Response\World;
 use AppBundle\Minecraft\Response\WorldList;
-use Http\Client\HttpClient;
-use Http\Message\MessageFactory;
-use Symfony\Component\Serializer\Serializer;
+use Http\Client\HttpAsyncClient;
+use Http\Promise\Promise;
+use JMS\Serializer\Serializer;
+use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
-    const RESOURCE_INFO = 'info';
-    const RESOURCE_CHAT = 'chat';
-    const RESOURCE_COMMAND = 'cmd';
-    const RESOURCE_PLAYER = 'player';
-    const RESOURCE_WORLD = 'world';
-    const RESOURCE_PLUGIN = 'plugin';
-    const RESOURCE_ENTITY = 'entity';
-    const RESOURCE_TILE_ENTITY = 'tile-entity';
-    const RESOURCE_CLASS = 'class';
+    private static $executor = 'Symfony API';
+    private static $resource_info = 'info';
+    private static $resource_chat = 'chat';
+    private static $resource_command = 'cmd';
+    private static $resource_player = 'player';
+    private static $resource_world = 'world';
+    private static $resource_plugin = 'plugin';
+    private static $resource_entity = 'entity';
+    private static $resource_tile_entity = 'tile-entity';
 
     private $httpClient;
-    private $messageFactory;
+    private $requestFactory;
     private $serializer;
-    private $baseUrl;
-    private $apiKey;
 
     public function __construct(
-        HttpClient $httpClient,
-        MessageFactory $messageFactory,
-        Serializer $serializer,
-        string $baseUrl,
-        string $apiKey
+        HttpAsyncClient $httpClient,
+        RequestFactory $requestFactory,
+        Serializer $serializer
     ) {
         $this->httpClient = $httpClient;
-        $this->messageFactory = $messageFactory;
+        $this->requestFactory = $requestFactory;
         $this->serializer = $serializer;
-        $this->baseUrl = $baseUrl;
-        $this->apiKey = $apiKey;
     }
 
-    public function info(): Info
+    public function info(): Promise
     {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_INFO));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), Info::class, 'json');
+        return $this->promiseResponse(self::$resource_info, Info::class);
     }
 
-    public function chat(): Chat
+    public function chat(): Promise
     {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_CHAT));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), Chat::class, 'json');
+        return $this->promiseResponse(self::$resource_chat, Chat::class);
     }
 
-    public function commands(): CommandList
+    public function commands(): Promise
     {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_COMMAND));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), CommandList::class, 'json');
+        return $this->promiseResponse(self::$resource_command, CommandList::class)
+            ->then(function (CommandList $commandList) {
+                return $commandList->getCommands();
+            })
+        ;
     }
 
-    public function execute(string $command)
+    public function execute(string $command): Promise
     {
-        $response = $this->httpClient
-            ->sendRequest($this->createRequest(
-                self::RESOURCE_COMMAND,
+        return $this->httpClient
+            ->sendAsyncRequest($this->requestFactory->createRequest(
+                self::$resource_command,
                 'POST',
                 [
-                    'name' => 'Robin',
+                    'name' => self::$executor,
                     'command' => $command,
                 ]
-            ))
-        ;
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), CommandResponse::class, 'json');
-    }
-
-    public function player(): PlayerList
-    {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_PLAYER));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), PlayerList::class, 'json');
-    }
-
-    public function playerDetail(string $uuid, bool $raw = false)
-    {
-        $resource = self::RESOURCE_PLAYER.'/'.$uuid;
-        if ($raw) {
-            $resource .= '/raw';
-        }
-
-        $response = $this->httpClient->sendRequest($this->createRequest($resource));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), Player::class, 'json');
-    }
-
-    public function world(): WorldList
-    {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_WORLD));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), WorldList::class, 'json');
-    }
-
-    public function worldDetail(string $uuid, bool $raw = false): World
-    {
-        $resource = self::RESOURCE_PLAYER.'/'.$uuid;
-        if ($raw) {
-            $resource .= '/raw';
-        }
-
-        $response = $this->httpClient->sendRequest($this->createRequest($resource));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), World::class, 'json');
-    }
-
-    public function plugin(): PluginList
-    {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_PLUGIN));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), PluginList::class, 'json');
-    }
-
-    public function pluginDetail(string $id, bool $raw = false)
-    {
-        $resource = self::RESOURCE_PLUGIN.'/'.$id;
-        if ($raw) {
-            $resource .= '/raw';
-        }
-
-        $response = $this->httpClient->sendRequest($this->createRequest($resource));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), Plugin::class, 'json');
-    }
-
-    public function entity(): EntityList
-    {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_ENTITY));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), EntityList::class, 'json');
-    }
-
-    public function entityDetail(string $uuid, bool $raw = false): Entity
-    {
-        $resource = self::RESOURCE_ENTITY.'/'.$uuid;
-        if ($raw) {
-            $resource .= '/raw';
-        }
-
-        $response = $this->httpClient->sendRequest($this->createRequest($resource));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), Entity::class, 'json');
-    }
-
-    public function tileEntity(): TileEntityList
-    {
-        $response = $this->httpClient->sendRequest($this->createRequest(self::RESOURCE_TILE_ENTITY));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), TileEntityList::class, 'json');
-    }
-
-    public function tileEntityDetail(string $uuid, bool $raw = false): TileEntity
-    {
-        $resource = self::RESOURCE_TILE_ENTITY . '/' . $uuid;
-        if ($raw) {
-            $resource .= '/raw';
-        }
-
-        $response = $this->httpClient->sendRequest($this->createRequest($resource));
-
-        return $this->serializer->deserialize($response->getBody()->getContents(), TileEntity::class, 'json');
-    }
-
-    private function createRequest(string $resource, string $method = 'GET', array $body = [])
-    {
-        $headers = [
-            'content-type' => 'application/json',
-            'x-webapi-key' => $this->apiKey,
-        ];
-
-        return $this->messageFactory
-            ->createRequest(
-                $method,
-                $this->buildRequestUrl($resource),
-                $headers,
-                $this->buildBody($body)
-            )
+            ))->then(function (ResponseInterface $response) {
+                return $this->serializer
+                    ->deserialize($response->getBody()->getContents(), CommandResponse::class, 'json');
+            })
         ;
     }
 
-    private function buildRequestUrl(string $resource): string
+    public function players(): Promise
     {
-        return rtrim($this->baseUrl, '/').'/'.$resource;
+        return $this->promiseResponse(self::$resource_player, PlayerList::class)
+            ->then(function (PlayerList $playerList) {
+                return array_map(function(Player $player) {
+                    return $this->pluginDetail($player->getUuid())->wait();
+                }, $playerList->getPlayers());
+            })
+        ;
     }
 
-    private function buildBody(array $body = [])
+    public function playerDetail(string $uuid, bool $raw = false): Promise
     {
-        if (empty($body)) {
-            return null;
+        $resource = self::$resource_player.'/'.$uuid;
+
+        return $this->promiseResponse($resource, Player::class, $raw);
+    }
+
+    public function worlds(): Promise
+    {
+        return $this->promiseResponse(self::$resource_world, WorldList::class)
+            ->then(function (WorldList $worldList) {
+                return array_map(function (World $world) {
+                    return $this->worldDetail($world->getUuid())->wait();
+                }, $worldList->getWorlds());
+            })
+        ;
+    }
+
+    public function worldDetail(string $uuid, bool $raw = false): Promise
+    {
+        $resource = self::$resource_world.'/'.$uuid;
+
+        return $this->promiseResponse($resource, World::class, $raw);
+    }
+
+    public function plugins(): Promise
+    {
+        return $this->promiseResponse(self::$resource_plugin, PluginList::class)
+            ->then(function (PluginList $pluginList) {
+                return array_map(function (Plugin $plugin) {
+                    return $this->pluginDetail($plugin->getId())->wait();
+                }, $pluginList->getPlugins());
+            })
+        ;
+    }
+
+    public function pluginDetail(string $id, bool $raw = false): Promise
+    {
+        $resource = self::$resource_plugin.'/'.$id;
+
+        return $this->promiseResponse($resource, Plugin::class, $raw);
+    }
+
+    public function entities(): Promise
+    {
+        return $this->promiseResponse(self::$resource_entity, EntityList::class)
+            ->then(function(EntityList $entityList) {
+                return array_map(function(Entity $entity) {
+                    return $this->entityDetail($entity->getUuid())->wait();
+                }, $entityList->getEntities());
+            })
+        ;
+    }
+
+    public function entityDetail(string $uuid, bool $raw = false): Promise
+    {
+        $resource = self::$resource_entity.'/'.$uuid;
+
+        return $this->promiseResponse($resource, Entity::class, $raw);
+    }
+
+    public function tileEntities(): Promise
+    {
+        return $this->promiseResponse(self::$resource_tile_entity, TileEntityList::class)
+            ->then(function (TileEntityList $tileEntityList) {
+                return $tileEntityList->getTileEntities();
+            })
+        ;
+    }
+
+    public function tileEntityDetail(string $uuid, bool $raw = false): Promise
+    {
+        $resource = self::$resource_tile_entity . '/' . $uuid;
+
+        return $this->promiseResponse($resource, TileEntity::class, $raw);
+    }
+
+    private function promiseResponse(string $resource, string $dto, bool $raw = false): Promise
+    {
+        if ($raw) {
+            $resource .= '/raw';
         }
 
-        return json_encode($body);
+        return $this->httpClient
+            ->sendAsyncRequest($this->requestFactory->createRequest($resource))
+            ->then(function(ResponseInterface $response) use ($dto) {
+                return $this->serializer->deserialize($response->getBody()->getContents(), $dto, 'json');
+            })
+        ;
     }
 }

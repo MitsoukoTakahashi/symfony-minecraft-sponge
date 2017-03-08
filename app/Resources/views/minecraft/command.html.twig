@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Führe Befehle auf der Minecraft Konsole aus</h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Beschreibung</th>
+                    <th>Verwendung</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for command in commands %}
+                    <tr>
+                        <td>{{ command.name }}</td>
+                        <td>{{ command.description }}</td>
+                        <td>{{ command.usage }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

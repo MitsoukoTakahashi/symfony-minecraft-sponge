@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Aktive Spieler</h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>UUID</th>
+                    <th>Name</th>
+                    <th>Adresse</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <td>{{ player.uuid }}</td>
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.address }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

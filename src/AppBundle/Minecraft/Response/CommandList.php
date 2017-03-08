@@ -2,19 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class CommandList
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\Command>")
+     */
     private $commands;
 
-    public function __construct(array $commands)
-    {
-        $this->commands = array_map(function(array $command) {
-            return new Command($command['name'], $command['aliases'], $command['usage'], $command['description']);
-        }, $commands);
-    }
-
     /** @return Command[] */
-    public function getCommands(): array
+    public function getCommands()
     {
         return $this->commands;
     }

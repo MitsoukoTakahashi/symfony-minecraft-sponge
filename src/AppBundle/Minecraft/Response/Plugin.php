@@ -2,57 +2,66 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class Plugin
 {
+    /**
+     * @Serializer\Type("string")
+     */
     private $id;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $name;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $description;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $version;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $url;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $authors;
 
-    public function __construct(
-        string $id,
-        string $name,
-        string $description = '',
-        string $version = '',
-        string $url = '',
-        array $authors = []
-    ) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->version = $version;
-        $this->url = $url;
-        $this->authors = $authors;
-    }
-
-    public function getId(): string
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->description;
     }
 
-    public function getVersion(): string
+    public function getVersion()
     {
         return $this->version;
     }
 
-    public function getUrl(): string
+    public function getUrl()
     {
         return $this->url;
     }
 
-    public function getAuthors(): array
+    public function getAuthors()
     {
         return $this->authors;
     }

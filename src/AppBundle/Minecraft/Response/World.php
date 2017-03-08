@@ -2,30 +2,36 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class World
 {
+    /**
+     * @Serializer\Type("string")
+     */
     private $name;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $uuid;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $raw;
 
-    public function __construct(string $name, string $uuid, array $raw = [])
-    {
-        $this->name = $name;
-        $this->uuid = $uuid;
-        $this->raw = $raw;
-    }
-
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
 
-    public function getUuid(): string
+    public function getUuid()
     {
         return $this->uuid;
     }
 
-    public function getRaw(): array
+    public function getRaw()
     {
         return $this->raw;
     }

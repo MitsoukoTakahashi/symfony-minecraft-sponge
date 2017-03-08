@@ -2,30 +2,36 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class TileEntity
 {
+    /**
+     * @Serializer\Type("string")
+     */
     private $type;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $location;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $raw;
 
-    public function __construct(string $type, array $location, array $raw = [])
-    {
-        $this->type = $type;
-        $this->location = $location;
-        $this->raw = $raw;
-    }
-
-    public function getType(): string
+    public function getType()
     {
         return $this->type;
     }
 
-    public function getLocation(): array
+    public function getLocation()
     {
         return $this->location;
     }
 
-    public function getRaw(): array
+    public function getRaw()
     {
         return $this->raw;
     }

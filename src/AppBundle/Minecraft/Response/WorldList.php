@@ -2,16 +2,17 @@
 
 namespace AppBundle\Minecraft\Response;
 
+use JMS\Serializer\Annotation as Serializer;
+
 class WorldList
 {
+    /**
+     * @Serializer\Type("array<AppBundle\Minecraft\Response\World>")
+     */
     private $worlds;
 
-    public function __construct(array $worlds)
-    {
-        $this->worlds = $worlds;
-    }
-
-    public function getWorlds(): array
+    /** @return World[] */
+    public function getWorlds()
     {
         return $this->worlds;
     }

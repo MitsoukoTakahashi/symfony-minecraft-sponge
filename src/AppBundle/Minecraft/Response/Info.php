@@ -2,67 +2,76 @@
 
 namespace AppBundle\Minecraft\Response;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use JMS\Serializer\Annotation as Serializer;
 
 class Info
 {
+    /**
+     * @Serializer\Type("string")
+     */
     private $motd;
+
+    /**
+     * @Serializer\Type("int")
+     */
     private $players;
+
+    /**
+     * @Serializer\Type("int")
+     */
     private $maxPlayers;
+
+    /**
+     * @Serializer\Type("int")
+     */
     private $uptimeTicks;
+
+    /**
+     * @Serializer\Type("bool")
+     */
     private $hasWhitelist;
+
+    /**
+     * @Serializer\Type("string")
+     */
     private $minecraftVersion;
+
+    /**
+     * @Serializer\Type("array")
+     */
     private $api;
 
-    public function __construct(
-        string $motd,
-        int $players,
-        int $maxPlayers,
-        int $uptimeTicks,
-        bool $hasWhitelist,
-        string $minecraftVersion,
-        array $api
-    ) {
-        $this->motd = $motd;
-        $this->players = $players;
-        $this->maxPlayers = $maxPlayers;
-        $this->uptimeTicks = $uptimeTicks;
-        $this->hasWhitelist = $hasWhitelist;
-        $this->minecraftVersion = $minecraftVersion;
-        $this->api = $api;
-    }
-
-    public function getMotd(): string
+    public function getMotd()
     {
         return $this->motd;
     }
 
-    public function getPlayers(): int
+    public function getPlayers()
     {
         return $this->players;
     }
 
-    public function getMaxPlayers(): int
+    public function getMaxPlayers()
     {
         return $this->maxPlayers;
     }
 
-    public function getUptimeTicks(): int
+    public function getUptimeTicks()
     {
         return $this->uptimeTicks;
     }
 
-    public function isHasWhitelist(): bool
+    public function isHasWhitelist()
     {
         return $this->hasWhitelist;
     }
 
-    public function getMinecraftVersion(): string
+    public function getMinecraftVersion()
     {
         return $this->minecraftVersion;
     }
 
-    public function getApi(): array
+    public function getApi()
     {
         return $this->api;
     }
