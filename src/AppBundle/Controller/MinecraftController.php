@@ -3,21 +3,19 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Minecraft\Client;
-use AppBundle\Minecraft\Response\Player;
-use AppBundle\Minecraft\Response\PlayerList;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 /** @Route(service="app.minecraft_controller", path="/minecraft") */
 class MinecraftController
 {
-    private $client;
     private $templating;
+    private $client;
 
-    public function __construct(Client $client, EngineInterface $templating)
+    public function __construct(EngineInterface $templating, Client $client)
     {
-        $this->client = $client;
         $this->templating = $templating;
+        $this->client = $client;
     }
 
     /**
@@ -47,13 +45,7 @@ class MinecraftController
     {
         return $this->templating->renderResponse('minecraft/players.html.twig', [
             'players' => $this->client
-                ->players()
-                ->then(function (PlayerList $playerList) {
-                    return array_map(function(Player $player) {
-                        return $this->client->pluginDetail($player->getUuid());
-                    }, $playerList->getPlayers());
-                })
-                ->wait()
+                ->players()->wait()
         ]);
     }
 }

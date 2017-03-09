@@ -1,7 +1,6 @@
-{% extends 'base.html.twig' %}
-
-{% block body %}
+{% if players|length != 0 %}
     <h1>Aktive Spieler</h1>
+    <p>Zur Zeit sind {{ players|length }} Spieler online.</p>
     <div>
         <table>
             <thead>
@@ -22,4 +21,6 @@
             </tbody>
         </table>
     </div>
-{% endblock %}
+{% else %}
+    <p>Zur Zeit keine Spieler aktiv!</p>
+{% endif %}
