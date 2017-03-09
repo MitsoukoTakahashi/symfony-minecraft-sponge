@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>{{ info.motd }}</h1>
-    <p>
-        Zur Zeit sind {{ info.players }} Spieler online.
-    </p>
+    {{ render(controller("app.minecraft_controller:infoAction")) }}
+    {{ render(controller("app.minecraft_controller:playersAction")) }}
 {% endblock %}

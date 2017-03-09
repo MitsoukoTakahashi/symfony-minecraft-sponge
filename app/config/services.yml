@@ -5,12 +5,14 @@ parameters:
 services:
   app.default_controller:
     class: AppBundle\Controller\DefaultController
+    arguments:
+      - '@templating'
 
   app.minecraft_controller:
     class: AppBundle\Controller\MinecraftController
     arguments:
-      - '@app.minecraft.client'
       - '@templating'
+      - '@app.minecraft.client'
 
   app.minecraft.guzzle_client:
     class: GuzzleHttp\Client
